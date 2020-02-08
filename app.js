@@ -1,12 +1,54 @@
+//Ex1
 // http://numbersapi.com/random/year?json
+
+// const fetch = require("node-fetch");
+
+// const year = process.argv[2] || Math.floor(Math.random() * 2021);
+
+// console.log("searching info for year", year);
+
+// fetch(`http://numbersapi.com/${year}/year?json`)
+//   .then(response => response.json())
+//   .then(data => console.log(data.text))
+//   .catch(err => console.log("ERROR!!!", err));
+
+// Ex2
+// `http://numbersapi.com/${number}/${type}?json`
 
 const fetch = require("node-fetch");
 
-const year = process.argv[2] || Math.floor(Math.random() * 2021);
+const arg = process.argv[2];
+let type = "";
+let number = "";
 
-console.log("searching info for year", year);
+if (arg.indexOf("--year") === 0) {
+  console.log("looking for year... ");
+  type = "year";
+} else if (arg.indexOf("--trivia") === 0) {
+  console.log("looking for trivia... ");
+  type = "trivia";
+} else if (arg.indexOf("--math") === 0) {
+  console.log("looking for interesting number... ");
+  type = "math";
+} else {
+  console.log("command not recognized");
+  type = "";
+}
 
-fetch(`http://numbersapi.com/${year}/year?json`)
-  .then(response => response.json())
+const equalSign = arg.search("=");
+
+// console.log(equalSign);
+if (equalSign === -1) {
+  console.log("number not given");
+} else {
+  number = arg.slice(equalSign + 1);
+  if (isNaN(number) || number === "") {
+    console.log("number not given");
+    process.exit();
+  }
+}
+
+fetch(`http://numbersapi.com/${number}/${type}?json`)
+  .then(res => res.json())
   .then(data => console.log(data.text))
   .catch(err => console.log("ERROR!!!", err));
